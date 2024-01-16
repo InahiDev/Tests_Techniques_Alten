@@ -7,8 +7,8 @@ const productCtrl = require('../controllers/product')
 
 router.get('/', productCtrl.getProducts)
 router.get('/:id', productCtrl.getProductById)
-router.post('/', productCtrl.createProduct)
-router.patch('/:id', productCtrl.modifyProduct)
-router.delete('/:id', productCtrl.removeProduct)
+router.post('/', /*auth, multer,*/ productCtrl.createProduct)
+router.patch('/:id', /*auth, multer,*/ productCtrl.modifyProduct)
+router.delete('/:id', /*auth,*/ productCtrl.removeProduct)
 
 module.exports = router
