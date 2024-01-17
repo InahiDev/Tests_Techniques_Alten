@@ -1,9 +1,8 @@
 const { productsRequest, code, name, price, quantity, inventoryStatus, category, rating } = require('./regex')
 
 //Parcours les différentes entrées du body et les confronte aux colonnes prédéfinies de notre modèle rassemblées dans une regex. En cas de champ erronés, renvoie 'false'. Sinon renvoie 'true'
-function analyzeBodyFields(body, regExp) {
-  const propertyArray = Object.keys(body)
-  for (let key of propertyArray) {
+function analyzeBodyFields(array, regExp) {
+  for (let key of array) {
     if (!regExp.test(key)) {
       return false
     }
@@ -13,23 +12,32 @@ function analyzeBodyFields(body, regExp) {
 
 //Vérification basique de l'id. L'Id doit être un nombre supérieur à l'Id minimum: 1000.
 function validateIdField(idField) {
-  if (parseInt(idField) < 1000) {
+  if (idField === ("" || ":id")) {
     return false
   } else {
-    return true
+    console.log(parseInt(idField))
+    if (parseInt(idField) >= 1000) {
+      return true
+    } else {
+      return false
+    }
   }
+  //if (parseInt(idField) >= 1000) {
+  //  return true
+  //} else {
+  //  return false
+  //}
 }
 
 //Vérification de l'existence de tous les champs obligatoires à la création d'une instance de product
-function creationFields(body) {
-  const propertyArray = Object.keys(body)
-  if (propertyArray.includes('code')
-  && propertyArray.includes('name')
-  && propertyArray.includes('description')
-  && propertyArray.includes('price')
-  && propertyArray.includes('quantity')
-  && propertyArray.includes('inventoryStatus')
-  && propertyArray.includes('category')) {
+function creationFields(array) {
+  if (array.includes('code')
+  && array.includes('name')
+  && array.includes('description')
+  && array.includes('price')
+  && array.includes('quantity')
+  && array.includes('inventoryStatus')
+  && array.includes('category')) {
     return true
   } else {
     return false
@@ -37,17 +45,16 @@ function creationFields(body) {
 }
 
 //Vérification de la présence d'au minimum 1 champ nécessaire pour la modification d'un product
-function modificationFields(body) {
-  const propertyArray = Object.keys(body)
-  if (propertyArray.includes('code')
-  || propertyArray.includes('name')
-  || propertyArray.includes('description')
-  || propertyArray.includes('price')
-  || propertyArray.includes('quantity')
-  || propertyArray.includes('inventoryStatus')
-  || propertyArray.includes('category')
-  || propertyArray.includes('image')
-  || propertyArray.includes('rating')) {
+function modificationFields(array) {
+  if (array.includes('code')
+  || array.includes('name')
+  || array.includes('description')
+  || array.includes('price')
+  || array.includes('quantity')
+  || array.includes('inventoryStatus')
+  || array.includes('category')
+  || array.includes('image')
+  || array.includes('rating')) {
     return true
   } else {
     return false
@@ -55,21 +62,17 @@ function modificationFields(body) {
 }
 
 //Vérification générale de la conformité du contenu d'un champ.
-function validateMandatoryField(field, regex) {
-  if (field) {
-    if (regex.test(field)) {
-      return true
-    } else {
-      return false
-    }
-  } else {
-    return false
-  }
+
+//Cas d'un champ obligatoire. Je considère leur présence vérifiée.
+function validateMandatoryField(fieldValue, regex) {
+  const isValid = regex.test(fieldValue)
+  return isValid
 }
 
-function validateExtraField(field, regex) {
-  if (field) {
-    if (regex.test(field)) {
+//Cas d'un champ optionnel, L'absence de cette propriété ne mets pas un arrêt au passage de la condition.
+function validateExtraField(array, fieldName, fieldValue, regex) {
+  if (array.includes(`${fieldName}`)) {
+    if (regex.test(fieldValue)) {
       return true
     } else {
       return false
@@ -79,32 +82,58 @@ function validateExtraField(field, regex) {
   }
 }
 
-//Vérification de la conformité de tous les champs de la requête appliquée à la création.
+//Vérification que les champs STRING ne soient pas vide s'ils existent. S'ils ne sont pas présent, ne bloque pas la condition
+function isExtraStringFullfilled(array, fieldName, fieldValue) {
+  if (array.includes(`${fieldName}`)) {
+    if (!fieldValue) {
+      return false
+    } else {
+      return true
+    }
+  } else {
+    return true
+  }
+}
+
+//Vérification de la conformité de tous les champs de la requête appliquée à la création. Certains champs sont obligatoires, d'autres sont otpionnels.
 function validateCreationRequest(body) {
-  if (validateMandatoryField(body.code, code)
-  && validateMandatoryField(body.price, price)
-  && validateMandatoryField(body.quantity, quantity)
-  && validateMandatoryField(body.inventoryStatus, inventoryStatus)
-  && validateMandatoryField(body.category, category)
-  && validateExtraField(body.rating, rating)) {
+  if (code.test(body.code)
+  && body.name  //Le champ name ne peut pas être vide.
+  && body.description //Le champ description ne peut pas être vide.
+  && price.test(body.price)
+  && quantity.test(body.quantity)
+  && inventoryStatus.test(body.inventoryStatus)
+  && category.test(body.category)
+  && validateExtraField(propertyArray, "rating", body.rating, rating)) {
     return true
   } else {
     return false
   }
 }
 
-// " à la modification.
+//Vérification de la conformité de tous les champs de la requête appliquée à la modification. Tous les champs sont alors optionnels.
 function validateModificationRequest(body) {
-  if (validateExtraField(body.code, code)
-  && validateExtraField(body.price, price)
-  && validateExtraField(body.quantity, quantity)
-  && validateExtraField(body.inventoryStatus, inventoryStatus)
-  && validateExtraField(body.category, category)
-  && validateExtraField(body.rating, rating)) {
+  const propertyArray = Object.keys(body)
+  if (validateExtraField(propertyArray, "code", body.code, code)
+  && isExtraStringFullfilled(propertyArray, "name", body.name)
+  && isExtraStringFullfilled(propertyArray, "description", body.description)
+  && validateExtraField(propertyArray, "price", body.price, price)
+  && validateExtraField(propertyArray, "quantity", body.quantity, quantity)
+  && validateExtraField(propertyArray, "inventoryStatus", body.inventoryStatus, inventoryStatus)
+  && validateExtraField(propertyArray, "category", body.category, category)
+  && validateExtraField(propertyArray, "rating", body.rating, rating)) {
     return true
   } else {
     return false
   }
 }
 
-module.exports = { analyzeBodyFields, validateIdField, creationFields, modificationFields, validateMandatoryField, validateExtraField, validateCreationRequest, validateModificationRequest }
+function formatNumericField(array, valueName, storedValue, requestValue) {
+  if (array.includes(valueName)) {
+    return parseInt(requestValue)
+  } else {
+    return parseInt(storedValue)
+  }
+}
+
+module.exports = { analyzeBodyFields, validateIdField, creationFields, modificationFields, validateMandatoryField, validateExtraField, validateCreationRequest, validateModificationRequest, formatNumericField }

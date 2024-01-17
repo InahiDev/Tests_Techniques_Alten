@@ -1,0 +1,1 @@
+Bienvenue dans le fichier README de la partie backend des Tests Techniques pour la société Alten développée par Gabriel Delaigue.

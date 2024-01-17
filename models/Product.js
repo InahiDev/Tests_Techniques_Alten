@@ -4,8 +4,7 @@ module.exports = (sequelize, type) => {
             type: type.INTEGER,
             allowNull: false,
             primaryKey: true,
-            autoIncrement: true,
-            initialAutoIncrement: 1000
+            autoIncrement: true
         },
         code: {
             type: type.STRING,
@@ -41,5 +40,7 @@ module.exports = (sequelize, type) => {
         rating: {
             type: type.INTEGER
         }
+    },{
+        initialAutoIncrement: 1000
     })
 }
