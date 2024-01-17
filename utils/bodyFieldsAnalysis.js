@@ -1,8 +1,8 @@
 const { productsRequest, code, name, price, quantity, inventoryStatus, category, rating } = require('./regex')
 
 //Parcours les différentes entrées du body et les confronte aux colonnes prédéfinies de notre modèle rassemblées dans une regex. En cas de champ erronés, renvoie 'false'. Sinon renvoie 'true'
-function analyzeBodyFields(req, regExp) {
-  const propertyArray = Object.keys(req.body)
+function analyzeBodyFields(body, regExp) {
+  const propertyArray = Object.keys(body)
   for (let key of propertyArray) {
     if (!regExp.test(key)) {
       return false
@@ -22,13 +22,14 @@ function validateIdField(idField) {
 
 //Vérification de l'existence de tous les champs obligatoires à la création d'une instance de product
 function creationFields(body) {
-  if (body.code
-  && body.name
-  && body.description
-  && body.price
-  && body.quantity
-  && body.inventoryStatus
-  && body.category) {
+  const propertyArray = Object.keys(body)
+  if (propertyArray.includes('code')
+  && propertyArray.includes('name')
+  && propertyArray.includes('description')
+  && propertyArray.includes('price')
+  && propertyArray.includes('quantity')
+  && propertyArray.includes('inventoryStatus')
+  && propertyArray.includes('category')) {
     return true
   } else {
     return false
@@ -37,15 +38,16 @@ function creationFields(body) {
 
 //Vérification de la présence d'au minimum 1 champ nécessaire pour la modification d'un product
 function modificationFields(body) {
-  if (body.code
-  || body.name
-  || body.description
-  || body.price
-  || body.quantity
-  || body.inventoryStatus
-  || body.category
-  || body.image
-  || body.rating) {
+  const propertyArray = Object.keys(body)
+  if (propertyArray.includes('code')
+  || propertyArray.includes('name')
+  || propertyArray.includes('description')
+  || propertyArray.includes('price')
+  || propertyArray.includes('quantity')
+  || propertyArray.includes('inventoryStatus')
+  || propertyArray.includes('category')
+  || propertyArray.includes('image')
+  || propertyArray.includes('rating')) {
     return true
   } else {
     return false
