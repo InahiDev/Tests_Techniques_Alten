@@ -283,5 +283,4 @@ exports.removeProduct = (req, res) => {
   } else {
     response(res, 401, "Vous n'avez pas les privilèges nécessaires pour supprimer un produit de la base de données.")
   }
-  
 }
