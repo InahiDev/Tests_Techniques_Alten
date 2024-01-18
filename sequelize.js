@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize')
 const mysql = require('mysql2')
 const ProductModel = require('./models/Product')
+const UserModel = require('./models/User')
 
 const USERNAME = process.env.DB_USERNAME
 const PWD = process.env.DB_PWD
@@ -18,6 +19,7 @@ initializeDataBase()
 const sequelize = new Sequelize('alten_tests', USERNAME, PWD, { port: PORT, dialect: DIALECT })
 
 const Product = ProductModel(sequelize, Sequelize)
+const User = UserModel(sequelize, Sequelize)
 
 sequelize.authenticate()
   .then(() => console.log('Connexion à la base de données réussie.'))
@@ -27,4 +29,4 @@ sequelize.sync()
   .then(() => console.log('Tables synchronisées et créées ou mises à jour avec les Modèles.'))
   .catch((error) => console.log(`Mise à jour ou création des Tables échouée: ${error}`))
 
-module.exports = { Product }
+module.exports = { Product, User }

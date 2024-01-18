@@ -15,18 +15,12 @@ function validateIdField(idField) {
   if (idField === ("" || ":id")) {
     return false
   } else {
-    console.log(parseInt(idField))
     if (parseInt(idField) >= 1000) {
       return true
     } else {
       return false
     }
   }
-  //if (parseInt(idField) >= 1000) {
-  //  return true
-  //} else {
-  //  return false
-  //}
 }
 
 //Vérification de l'existence de tous les champs obligatoires à la création d'une instance de product
@@ -96,7 +90,7 @@ function isExtraStringFullfilled(array, fieldName, fieldValue) {
 }
 
 //Vérification de la conformité de tous les champs de la requête appliquée à la création. Certains champs sont obligatoires, d'autres sont otpionnels.
-function validateCreationRequest(body) {
+function validateCreationRequest(body, propertyArray) {
   if (code.test(body.code)
   && body.name  //Le champ name ne peut pas être vide.
   && body.description //Le champ description ne peut pas être vide.

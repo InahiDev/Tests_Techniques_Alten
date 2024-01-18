@@ -9,6 +9,7 @@ dotenv.config()
 
 //Importation des routers
 const productRoutes = require('./routes/product')
+const userRoutes = require('./routes/user')
 
 const app = express()
 
@@ -36,5 +37,6 @@ app.use(helmet({
 app.use(limiter)
 
 app.use('/api/v1/products', productRoutes)
+app.use('/api/v1/user', userRoutes)
 
 module.exports = app

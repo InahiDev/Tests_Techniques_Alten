@@ -6,5 +6,6 @@ const quantity = /^[0-9]{1,}$/
 const inventoryStatus = /^INSTOCK$|^LOWSTOCK$|^OUTOFSTOCK$/
 const category = /^Accessories$|^Clothing$|^Electronics$|^Fitness$/
 const rating = /^[0-5]{1}$/
+const savedImage = /^http:\/\/localhost:3000\/images\/.+$/
 
-module.exports = { productsRequest, code, name, price, quantity, inventoryStatus, category, rating }
+module.exports = { productsRequest, code, name, price, quantity, inventoryStatus, category, rating, savedImage }
