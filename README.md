@@ -53,7 +53,7 @@ La modification d'un produit.
 Endpoint également protégé, nécessite un rôle admin.
 La même architecture de corps est demandée que pour une requête POST "/".
 
-/DELETE "/:id" .
+DELETE "/:id" .
 Destruction d'un produit et des fichiers potentiellement liés au produit.
 Nécessite un rôle d'admin.
 
