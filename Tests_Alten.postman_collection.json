@@ -1,0 +1,415 @@
+{
+	"info": {
+		"_postman_id": "8487ebc8-d60d-4d25-8c2d-9fc2a6ff3d61",
+		"name": "Tests_Alten",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21176236"
+	},
+	"item": [
+		{
+			"name": "Authentification",
+			"item": [
+				{
+					"name": "Post Create Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"gabriel.delaigue2@gmail.com\",\r\n    \"password\": \"Unm0td3p4ss3c0rr3ct\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/user/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"gabriel.delaigue@gmail.com\",\r\n    \"password\": \"UnM0tD3p4ss3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/user/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GET Obtenir",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/products/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1059"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST Création",
+			"item": [
+				{
+					"name": "Post New Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"845956880\",\r\n    \"name\": \"Produit Test\",\r\n    \"description\": \"Produit Test\",\r\n    \"image\": \"\",\r\n    \"price\": 2147483647,\r\n    \"category\": \"Accessories\",\r\n    \"quantity\": 2147483647,\r\n    \"inventoryStatus\": \"INSTOCK\",\r\n    \"rating\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post New Product Image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "code",
+									"value": "845956879",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Produit Test Image",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Produit Test Image",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "02147483647",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Accessories",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "02147483647",
+									"type": "text"
+								},
+								{
+									"key": "inventoryStatus",
+									"value": "OUTOFSTOCK",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"value": "produit-test.jpg",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/H:/Dev Web/P2 - Booki/Booki/assets/img/activites/4_small/florian-wehde-xW9e8gdotxI-unsplash.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PATCH Modification",
+			"item": [
+				{
+					"name": "Patch Modify Product Textual",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"code\": \"845956871\",\r\n\t\t\t\"name\": \"Product modifié\",\r\n\t\t\t\"description\": \"Product modifié\",\r\n\t\t\t\"image\": \"fake-imagge.jpg\",\r\n\t\t\t\"price\": 2147483647,\r\n\t\t\t\"category\": \"Fitness\",\r\n\t\t\t\"quantity\": 0,\r\n\t\t\t\"inventoryStatus\": \"INSTOCK\",\r\n\t\t\t\"rating\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/products/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1059"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Modify Product Image",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "code",
+									"value": "845956871",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Product modifié",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Product modifié",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "2147483647",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Accessories",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "2147483647",
+									"type": "text"
+								},
+								{
+									"key": "inventoryStatus",
+									"value": "INSTOCK",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/H:/Dev Web/P2 - Booki/Booki/assets/img/activites/4_small/kevin-hikari-rV_Qd1l-VXg-unsplash.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/products/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1059"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Remove Product",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/products/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"products",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1058"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU0ZDMzNmI0LTVhYTEtNDk4Mi04MTdjLTg5YmQwYTMwMDRlNiIsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiZ2FicmllbC5kZWxhaWd1ZUBnbWFpbC5jb20iLCJpYXQiOjE3MDU2NTk5NzIsImV4cCI6MTcwNTY3MDc3Mn0.XMOAOy0ecKNMOKXN-n1PTjFIFRHYBavCUDz55GvAMcc",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
