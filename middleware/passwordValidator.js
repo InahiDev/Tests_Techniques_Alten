@@ -16,6 +16,6 @@ module.exports = (req, res, next) => {
       next()
     }
   } else {
-    response(res, 400, 'Veuillez remplir le champ "mot de passe".')
+    response(res, 400, 'Veuillez remplir le champ mot de passe.')
   }
 }

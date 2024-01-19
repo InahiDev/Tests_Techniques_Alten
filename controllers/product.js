@@ -1,7 +1,7 @@
 const { Product } = require('../sequelize')
 const { analyzeBodyFields, validateIdField, creationFields, modificationFields, validateCreationRequest, validateModificationRequest, formatNumericField } = require('../utils/bodyFieldsAnalysis')
 const { productsRequest, price, savedImage } = require('../utils/regex')
-const { oldImageDelete } = require('../utils/fsDelete')
+const { oldImageDelete, newImageDelete } = require('../utils/fsDelete')
 const { response } = require('../utils/response')
 const fs = require('fs')
 
@@ -99,6 +99,11 @@ exports.getProductById = (req, res) => {
 /*
 Bien que cela n'ait pas été demandé dans le README du dossier auquel j'ai eu accès, dans le mail envoyé par Mme Soula, il était question d'un rôle administrateur.
 J'ai donc considéré qu'il était demandé et ai inclus des conditions d'accès basées sur l'identification à l'API.
+De plus, j'ai ajouté le traitement d'images (ici, des images de poids légers afin de tester).
+Chaque erreur renvoyée par les endpoints concernés par l'enregistrement d'image (create & modify) est précédé de la destruction de l'image.
+Cela permet de ne pas surcharger le côté serveur avec des fichiers qui ne seront liés à aucun produit de la base de données.
+L'enregistrement et la destruction du fichier image en cas d'erreur étant très rapide,
+j'ai ajouté un console.log en callback de la fonction fs.unlink afin de garder une trace du travail de l'API.
 */  
 
 exports.createProduct = (req, res) => {
@@ -114,7 +119,8 @@ exports.createProduct = (req, res) => {
           Product.findOne({ where: { code: req.body.code }})
             .then((product) => {
               //Si j'ai un retour positif pour la recherche dans la base de données avec le code produit fourni.
-              if (product) {
+              if (product) {  //  Le code produit est déjà attribué, la création n'aura pas lieu il faut donc détruire l'image importée.
+                newImageDelete(req)
                 response(res, 400, "Un produit existe déjà avec ce code précis, vous ne pouvez pas enregistrer deux fois le même produit, veuillez modifier le produit pré-existant à la place, merci.")
               } else {
                 //Création d'une variable de transition afin de traiter la propriété optionnelle "rating"
@@ -141,20 +147,30 @@ exports.createProduct = (req, res) => {
                 //Le code produit est unique, les champs STRING obligatoires ne sont pas vides, les valeurs numériques ont été mise sous format de nombre (vérifiées auparavant). Je peux modifier la BDD.
                 product.save()
                   .then((product) => response(res, 201, "Nouveau produit enregistré.", product))
-                  .catch((error) => response(res, 500, `Une erreur est survenue durant la création du nouveau produit: ${error}`))
+                  .catch((error) => {
+                    newImageDelete(req)
+                    response(res, 500, `Une erreur est survenue durant la création du nouveau produit: ${error}`)
+                  })
               }
             })
-            .catch((error) => response(res, 500, `Une erreur est survenue lors de la recherche d'un produit pré-existant avec le même code, avant la création: ${error}`))
+            .catch((error) => {
+              newImageDelete(req)
+              response(res, 500, `Une erreur est survenue lors de la recherche d'un produit pré-existant avec le même code, avant la création: ${error}`)
+            })
         } else {
+          newImageDelete(req)
           response(res, 400, "Certaines valeurs des champs: code / name / price / quantity / inventoryStatus / category / rating, ne sont pas autorisées.")
         }
       } else {
+        newImageDelete(req)
         response(res, 400, "Un ou plusieurs champs obligatoires sont absents de la requête.")
       }
     } else {
+      newImageDelete(req)
       response(res, 400, "Un ou plusieurs champs sont incorrects dans cette requête.")
     }
   } else {
+    newImageDelete(req)
     response(res, 401, "Vous n'avez pas les privilèges nécessaires pour créer des ressources.")
   }
 }
@@ -190,6 +206,7 @@ exports.modifyProduct = (req, res) => {
                         //Si un produit est trouvé, et si le produit trouvé à un id différent de celui auquel doit s'appliquer la màj :
                         //On essaye donc à ce moment-là de donner un code produit déjà attribué à un autre produit, à celui que l'on met à jour.
                         if (codeProduct && codeProduct.id !== product.id) {
+                          newImageDelete(req)
                           response(res, 400, `Vous ne pouvez pas attribuer ${req.body.code} au produit ${req.body.name}. Ce code est déjà en cours d'utilisation pour le produit ${codeProduct.name}`)
                         } else {
                           // Tous les champs présents ont des valeurs qui ont été vérifiées et qui n'entreront pas en conflit. On peut procéder à la mise-à-jour de la base de données.
@@ -212,10 +229,16 @@ exports.modifyProduct = (req, res) => {
                               }
                               response(res, 200, `Produit mis à jour avec le code produit ${req.body.code}`)
                             })
-                            .catch((error) => response(res, 500, `Une erreur est survenue durant la mise-à-jour du produit avec ou sans changement de code: ${error}`))
+                            .catch((error) => {
+                              newImageDelete(req)
+                              response(res, 500, `Une erreur est survenue durant la mise-à-jour du produit avec ou sans changement de code: ${error}`)
+                            })
                         }
                       })
-                      .catch((error) => response(res, 500, `Une erreur est survenue durant la vérification d'un produit existant avec le même code-produit: ${error}`))
+                      .catch((error) => {
+                        newImageDelete(req)
+                        response(res, 500, `Une erreur est survenue durant la vérification d'un produit existant avec le même code-produit: ${error}`)
+                      })
                   } else {  // Aucune propriété code n'a été transmise. Aucune vérification n'est nécessaire pour de potentiels conflits.
                     Product.update({
                       ...req.body,
@@ -232,26 +255,38 @@ exports.modifyProduct = (req, res) => {
                         }
                         response(res, 200, "Produit mis à jour.")
                       })
-                      .catch((error) => response(res, 500, `Une erreur est survenue durant la mise-à-jour de la ressource: ${error}`))
+                      .catch((error) => {
+                        newImageDelete(req)
+                        response(res, 500, `Une erreur est survenue durant la mise-à-jour de la ressource: ${error}`)
+                      })
                   }
                 } else {
+                  newImageDelete(req)
                   response(res, 404, `Aucun produit n'a été trouvé avec l'id: ${id}`)
                 }
               })
-              .catch((error) => response(res, 500, `Une erreur s'est produite lors de la recherche du produit à modifier: ${error}`))
+              .catch((error) => {
+                newImageDelete(req)
+                response(res, 500, `Une erreur s'est produite lors de la recherche du produit à modifier: ${error}`)
+              })
           } else {
+            newImageDelete(req)
             response(res, 400, "Certains champs comprennent des valeurs non-autorisées.")
           }
         } else {
+          newImageDelete(req)
           response(res, 400, "Aucun champ nécessaire à la modification d'un produit n'est présent dans la requête.")
         }
       } else {
+        newImageDelete(req)
         response(res, 400, "Certains champs de la requête ne sont pas autorisés.")
       }
     } else {
+      newImageDelete(req)
       response(res, 400, "Aucun produit ne correspond à cet ID.")
     }
   } else {
+    newImageDelete(req)
     response(res, 401, "Vous n'avez pas les privilèges nécessaires pour effectuer une mise à jour des produits")
   }
 }
@@ -278,7 +313,7 @@ exports.removeProduct = (req, res) => {
         })
         .catch((error) => response(res, 500, `Une erreur est survenue lors de la recherche du produit à supprimer: ${error}`))
     } else {
-      response(res, 400, `L'id n°${id} n'est pas un id correct.`)
+      response(res, 400, `L'id ${req.params.id} n'est pas un id correct.`)
     }
   } else {
     response(res, 401, "Vous n'avez pas les privilèges nécessaires pour supprimer un produit de la base de données.")

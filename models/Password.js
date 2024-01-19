@@ -9,6 +9,6 @@ pwdSchema
 .has().lowercase(1, "Votre mot de pass doit contenir au minimum 1 minuscule.")
 .has().digits(1, "Votre mot de passe doit contenir au minimum 1 chiffre")
 .has().not().spaces(1, "Votre mot de passe ne peut contenir d'espace ou caractères assimilés (Retour à la ligne...).")
-.has().not().symbols(1, "Votre mot de passe ne peut contenir de symboles ($, *, °, ...)")
+.has().not().symbols(1, "Votre mot de passe ne peut contenir de symboles ($, *, ...)")
 
 module.exports = pwdSchema
