@@ -4,7 +4,7 @@ const { response } = require('../utils/response')
 const MIME_TYPES = {
   'image/jpeg': 'jpg',
   'image/jpg': 'jpg',
-  'imagge/png': 'png'
+  'image/png': 'png'
 }
 
 const storage = multer.diskStorage({
